@@ -1,0 +1,62 @@
+//Cookies
+
+=>Add Cookies:
+
+    -Session cookie: HttpContext.Response.Cookies.Append("Test1", "Value1");
+    -Persistant cookie: HttpContext.Response.Cookies.Append("Test2", "Value2",
+                    new CookieOptions() { Expires = DateTime.Now.AddSeconds(10)});
+
+=>Delete Cookies:
+
+    -HttpContext.Response.Cookies.Delete(cookie)
+
+=>Access Cookies:
+
+    -Count how many cookies: Context.Request.Cookies.Count
+    -Cookies keys: Context.Request.Cookies.Keys
+    -Cookies content: @item - @Context.Request.Cookies[item]
+
+=>Example:
+    @if (Context.Request.Cookies.Count == 0){
+        <div>No cookies were sent</div>
+    }
+    @foreach (var item in Context.Request.Cookies.Keys){
+        <div>@item - @Context.Request.Cookies[item]</div>
+    }
+
+//Session
+
+=>Add session:
+
+    builder.Services.AddSession(option =>
+    {
+        option.IdleTimeout = TimeSpan.FromMinutes(10);
+        option.Cookie.Name = ".AspNetCore.Session";
+    });
+
+    ...
+
+    app.UseSession();
+
+=>Delete session:
+
+    HttpContext.Response.Cookies.Delete(".AspNetCore.Session");
+
+//Session Variables
+
+=>Add session variables:  
+
+    -String: HttpContext.Session.SetString("StringValue", "Text variable value");
+    -Integer: HttpContext.Session.SetInt32("IntegerValue", 100);
+
+=>Delete session variables:
+
+    -HttpContext.Session.Remove(item);
+
+=>Access session variable:
+
+    -Count how many session variables are: HttpContext.Session.Keys.Count
+    -Session variable keys: HttpContext.Session.Keys
+    -session variable content: Context.Session.Get(String/Int32)(item);
+
+=>Inject @using Microsoft.AspNetCore.Http; on _ViewsImports.cshtml
