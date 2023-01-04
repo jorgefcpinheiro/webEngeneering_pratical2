@@ -1,0 +1,75 @@
+Authentication
+
+    =>Add password requirements
+
+        builder.Services.Configure<IdentityOptions>(options => 
+        {
+            options.Password.(...)
+            options.Lockout.(...)
+            options.User.(...)
+        });
+
+    =>Mudar de email para username
+        No registo:
+            -Adicionar ao InputModel do cshtml
+            -Alterar algo no PostAsync (replace no email)
+            -Alterar a view
+        No login:
+            -Replace no email do InputModel do cshtml
+            -Alterar algo no PostAsync (Replace no email)
+            -Replace email na view
+
+    =>Add informacoes ao User
+
+        -Criar model (com username em comum)
+        -Add novo DbSet ao DbContext (public DbSet<Perfil> Perfils {get; set;})
+        -Add migration
+        -Update Database
+        -Add ao InputModel
+        -Injetar ApplicationDbContext no cshtml
+        -Se registo for sucesso:
+            Perfil perfil = new Perfil { Username = user.UserName, Birthday=Input.Birthday };
+            _dbcontext.Perfils.Add(perfil);
+            await _dbcontext.SaveChangesAsync();
+        -Alterar view
+
+Authorization
+
+    [Authorize] -> so usuarios logados podem aceder
+    [AllowAnonymous] -> usuarios podem acessar mesmo sem estarem logados
+
+    =>Roles:
+        -Adicionar .AddRoles<IdentityRole>() ao program.cs
+        -Criar a classe SeedRoles.cs no Data e adicionar:
+            public static void Seed(RoleManager<IdentityRole> roleManager)
+            {
+                if (roleManager.Roles.Any() == false) {
+                    roleManager.CreateAsync(new IdentityRole("Admin")).Wait();
+                    roleManager.CreateAsync(new IdentityRole("Client")).Wait();
+                }
+            }
+        -Adicionar ao program.cs:
+            builder.Services.AddScoped<RoleManager<IdentityRole>>();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                SeedRoles.Seed(roleManager);
+            }
+        -Injetar no register.cshtml
+        -Adicionar propriedade ao InputModel
+        -Enviar dados para a view atraves do ViewData["roles"]= _roleManager.Roles.ToList(); no GetAsync
+        -Adicionar à view:
+            <select asp-for="Input.Role" class="form-control" asp-items='new SelectList (ViewBag.roles,"Name", "Name")'>
+                        <option>--Select a Role--</option>
+            </select>
+        -No cshtml adicionar 
+            await _userManager.AddToRoleAsync(user, Input.Role);
+            (no fim...)
+            ViewData....
+    
+    =>Authorizaton with roles
+        [Authorize(Roles="nome_do_role1, nome_do_role2")]
+
+    =>Get user name: User.Identity.Name
+    =>Check user role: User.IsInRole("Admin")
