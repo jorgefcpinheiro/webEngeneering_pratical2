@@ -1,0 +1,14 @@
+
+=>Instalar package: pesquisar unobtrusive
+=>Injetar script:
+    -Ir ao pacote e ir a pasta de origem
+    -abrir content/scripts
+    -criar pasta jquery-ajax em wwwroot/lib
+    -arrastar scripts
+    -injetar em _layout
+
+    Exemplo de ajax:
+        <a asp-action="TestAjaxLink"
+        data-ajax="true" data-ajax-method="get"
+        data-ajax-mode="replace" data-ajax-update="#target"
+        data-ajax-loading="#wait">Click me</a>
