@@ -60,3 +60,24 @@
     -session variable content: Context.Session.Get(String/Int32)(item);
 
 =>Inject @using Microsoft.AspNetCore.Http; on _ViewsImports.cshtml
+
+Apagar so passado 5min: 
+
+        public IActionResult Delete(int Id)
+        {
+            string username = User.Identity.Name;
+
+            if (HttpContext.Request.Cookies["alreadyDeleted"] == null)
+            {
+                HttpContext.Response.Cookies.Append("alreadyDeleted", User.Identity.Name,
+                new CookieOptions() { Expires = DateTime.Now.AddMinutes(5) });
+                filme f = _context.filmes.Find(Id);
+                _context.filmes.Remove(f);
+                _context.SaveChanges();
+                return PartialView("Index", _context.filmes);
+            }
+            else
+            {
+                return PartialView("Index", _context.filmes);
+            }
+        }
