@@ -1,0 +1,13 @@
+Adicionar se nao existir: 
+
+            if (_context.filmes.Any(f => f.Titulo == filme.Titulo) == false)
+                {
+                    _context.Add(filme);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError("Titulo", "Título repetido. Escolha outro");
+                    return View();
+                }
