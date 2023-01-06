@@ -12,3 +12,16 @@
         data-ajax="true" data-ajax-method="get"
         data-ajax-mode="replace" data-ajax-update="#target"
         data-ajax-loading="#wait">Click me</a>
+
+=>Show button if checked:
+    <input type="checkbox" id="accept" value="true" />
+    <button id="register" type="submit"  style="display:none">Register</button>
+    <script>
+            $("#accept").change(function () {
+                if (this.checked){
+                    $("#register").show();
+                } else {
+                    $("#register").hide();
+                }
+            });
+    </script>
